@@ -58,11 +58,11 @@ def check_login(request):
             'firstName': user.first_name,
             'lastName': user.last_name,
             'email': user.email,
-            'DOB': user.dob,
+            'dob': user.dob,
             'status': True
         }
         try:
-            cursor.execute("update  users set last_login = '%s' where email = '%s'" % (datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), email))
+            cursor.execute("update users set last_login = '%s' where email = '%s'" % (datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S'), email))
             db.commit()
             print ('hello')
         except Exception as err:
@@ -89,5 +89,30 @@ def check_register(request):
         db.commit()
         return HttpResponse(json.dumps({'status': True}))
     except Exception as err:
-        print ('you got error', err)
+        print ('you got database error', err)
         return HttpResponse(json.dumps({'status': False,'error': err}))
+
+@csrf_exempt
+
+def edit_profile(request):
+    data = json.loads(request.body)
+    user.firstName = data['firstName']
+    user.lastName = data['lastName']
+    user.dob = data['dob']
+    user.email = data['email']
+    dp = request.files['dp']
+    data1 = {
+        'firstName': user.firstName,
+        'lastName': user.lastName,
+        'dob': user.dob,
+        'email': user.email,
+        'status': True
+    }
+
+    try:
+        cursor.execute("update users set firstName = '%s', lastName = '%s', DOB = '%s',dp = '%s' where email = '%s'" % (user.firstName, user.lastName, user.dob,dp, user.email))
+        db.commit()
+        return HttpResponse(json.dumps(data1))
+    except Exception as err:
+        print ("error occured", err)
+        return HttpResponse(json.dumps({'status': False, 'error': err}))
