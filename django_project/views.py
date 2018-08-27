@@ -4,6 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import auth
 from django.http import QueryDict
 import time
+from django.test import Client
 import datetime
 import MySQLdb
 import json
@@ -95,12 +96,14 @@ def check_register(request):
 @csrf_exempt
 
 def edit_profile(request):
+    user = users()
     data = json.loads(request.body)
     user.firstName = data['firstName']
     user.lastName = data['lastName']
     user.dob = data['dob']
     user.email = data['email']
-    dp = request.files['dp']
+    #dp = request.files['dp']
+    print (data)
     data1 = {
         'firstName': user.firstName,
         'lastName': user.lastName,
@@ -110,9 +113,14 @@ def edit_profile(request):
     }
 
     try:
-        cursor.execute("update users set firstName = '%s', lastName = '%s', DOB = '%s',dp = '%s' where email = '%s'" % (user.firstName, user.lastName, user.dob,dp, user.email))
+        cursor.execute("update users set firstName = '%s', lastName = '%s', DOB = '%s' where email = '%s'" % (user.firstName, user.lastName, user.dob, user.email))
         db.commit()
         return HttpResponse(json.dumps(data1))
-    except Exception as err:
-        print ("error occured", err)
-        return HttpResponse(json.dumps({'status': False, 'error': err}))
+    except:
+        return HttpResponse(json.dumps({'status': False, 'error': 'integrity error'}))
+
+
+def jaja(request):
+    c = Client()
+    response = c.post('/login_auth/')
+    return HttpResponse(c)

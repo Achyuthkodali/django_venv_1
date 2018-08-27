@@ -22,5 +22,7 @@ from .views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login_auth', check_login),
-    url(r'^register_auth', check_register)
+    url(r'^register_auth', check_register),
+    url(r'^edit_profile', edit_profile),
+    url(r'^jaja', jaja)
 ]
