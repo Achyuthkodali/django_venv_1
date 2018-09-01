@@ -24,5 +24,7 @@ urlpatterns = [
     url(r'^login_auth', check_login),
     url(r'^register_auth', check_register),
     url(r'^edit_profile', edit_profile),
-    url(r'^jaja', jaja)
+    url(r'^jaja', jaja),
+    url(r'^change_password', change_password),
+    url(r'^upload_avatar', upload_avatar)
 ]

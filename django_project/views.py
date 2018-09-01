@@ -5,10 +5,12 @@ from django.contrib import auth
 from django.http import QueryDict
 import time
 from django.test import Client
+import base64
 import datetime
 import MySQLdb
 import json
 import ast
+import traceback
 
 
 class users:
@@ -28,8 +30,11 @@ class users:
 db = MySQLdb.connect(host="localhost", user="achyuth", passwd="1234", db="django_project")
 cursor = db.cursor()
 
-@csrf_exempt
 
+
+
+
+@csrf_exempt
 def check_login(request):
     user = users()
 
@@ -53,6 +58,7 @@ def check_login(request):
         user.password = data[4]
         user.dob = data[5]
         user.csrf_token = data[6]
+
         print ('inside if')
         data1 = {
             'id': user.u_id,
@@ -73,8 +79,11 @@ def check_login(request):
     else:
         return HttpResponse(json.dumps({'status': False}))
 
-@csrf_exempt
 
+
+
+
+@csrf_exempt
 def check_register(request):
     user = users()
     data = json.loads(request.body)
@@ -93,8 +102,11 @@ def check_register(request):
         print ('you got database error', err)
         return HttpResponse(json.dumps({'status': False,'error': err}))
 
-@csrf_exempt
 
+
+
+
+@csrf_exempt
 def edit_profile(request):
     user = users()
     data = json.loads(request.body)
@@ -120,7 +132,71 @@ def edit_profile(request):
         return HttpResponse(json.dumps({'status': False, 'error': 'integrity error'}))
 
 
+
+
+
+
+@csrf_exempt
+def change_password(request):
+    user = users()
+    data = json.loads(request.body)
+    newPassword = data['newPassword']
+    confirmPassword = data['confirmPassword']
+    oldPassword = data['oldPassword']
+    id = data['id']
+    if newPassword == confirmPassword:
+
+        try:
+            cursor.execute("select password from users where id = '%s'" % (id))
+        except:
+            return HttpResponse(json.dumps({'error': 'integrity error at old password retrival'}))
+
+        results = cursor.fetchone()
+        print (results[0])
+
+        if oldPassword == results[0]:
+            try:
+                cursor.execute("update users set password = '%s' where id = '%s'" % (newPassword,id))
+                db.commit()
+            except:
+                return HttpResponse(json.dumps({'status': False, 'error': 'integrity error at updation'}))
+                sys.exit()
+            return HttpResponse(json.dumps({'status': True}))
+        else:
+            return HttpResponse(json.dumps({'status': False, 'oldPasswordError': 'old password is not same'  }))
+
+    else:
+        return HttpResponse(json.dumps({'status' : False, 'confirmPasswordError': 'new password and confirm password not same'}))
+
+
+
+
+
+@csrf_exempt
+def upload_avatar(request):
+    user = users()
+    print ('hello')
+    data = request.body
+    print ('after data')
+    avatar = request.FILES.get('avatar')
+    print ('after avatar')
+    print (type(avatar))
+    id = request.POST.get('id')
+
+    try:
+        cursor.execute("update users set dp = '%s' where id = '%s'" % (avatar, id))
+        db.commit()
+        print ('inside try')
+    except:
+        traceback.print_exc()
+        return HttpResponse(json.dumps({'status': False, 'error': 'integrity error at updation'}))
+
+    return HttpResponse(json.dumps({'status': True}))
+
+
+
+@csrf_exempt
 def jaja(request):
     c = Client()
-    response = c.post('/login_auth/')
-    return HttpResponse(c)
+    response = c.post('/change_password/', json.loads("{'id': '7', 'oldPassword': 'some', 'newPassword': 'something'}"))
+    return HttpResponse()
