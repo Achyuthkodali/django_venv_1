@@ -26,5 +26,7 @@ urlpatterns = [
     url(r'^edit_profile', edit_profile),
     url(r'^jaja', jaja),
     url(r'^change_password', change_password),
-    url(r'^upload_avatar', upload_avatar)
+    url(r'^upload_avatar', upload_avatar),
+    url(r'^mail_test', mail_test),
+    url(r'^activate_user', activate_user)
 ]

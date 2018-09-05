@@ -22,7 +22,7 @@ SECRET_KEY = '-o8n2o5&^%*_rtu-tw+^&$n9h%10f0_%jwlc(t8*^*@*9=4o6v'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.110','testserver']
+ALLOWED_HOSTS = ['192.168.0.11', '192.168.0.110', 'testserver']
 
 
 # Application definition
@@ -127,6 +127,16 @@ USE_L10N = True
 USE_TZ = True
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+SEND_GRID_API_KEY = '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'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'AchyuthAchyuth'
+EMAIL_HOST_PASSWORD = 'achyuth11'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'achyuth.kodali@smactechlabs.com'
+ACCOUNT_EMAIL_SUBJECT_PREFIX = 'email hey....'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 
 # Static files (CSS, JavaScript, Images)
