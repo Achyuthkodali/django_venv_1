@@ -161,7 +161,7 @@ def activate_user(request):
     if data1:
         print ('inside of if')
         try:
-            cursor.execute("update users set csrftoken = 1 where csrftoken = '%s'" % (user.csrftoken))
+            cursor.execute("update users set csrftoken = '1' where id = '%s'" % (data[0]))
             print ('inside of try inside if')
         except:
             print ("except block in second try")
